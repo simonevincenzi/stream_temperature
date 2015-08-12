@@ -1,3 +1,9 @@
+list.of.packages <- c("dplyr","plyr","lubridate","descr",
+                      "pbapply","seas")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+
 zak.temp.df = read.csv("zak_temp.csv",header = T, 
                        stringsAsFactors = FALSE,na.strings ="")
 
