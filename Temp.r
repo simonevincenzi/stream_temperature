@@ -1,9 +1,64 @@
-list.of.packages <- c("dplyr","plyr","lubridate","descr",
-                      "pbapply","seas")
+## Temperature csv files can be downloaded at simonevincenzi.com/TemperatureData.zip
+
+# Temperature files have date and mean daily Temperature
+
+#### check whether the necessary libraries are installed, otherwise install libraries
+list.of.packages <- c("dplyr","lubridate","descr",
+                      "seas", "grid","ggplot2")
 
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
+## Load libraries
+
+library(dplyr)
+library(lubridate)
+library(seas)
+library(ggplot2)
+library(grid)
+
+#### arrange_ggplot2 ---- Function for plotting
+
+require(grid)
+vp.layout <- function(x, y) viewport(layout.pos.row=x, layout.pos.col=y)
+arrange_ggplot2 <- function(..., nrow=NULL, ncol=NULL, as.table=FALSE) {
+  dots <- list(...)
+  n <- length(dots)
+  if(is.null(nrow) & is.null(ncol)) { nrow = floor(n/2) ; ncol = ceiling(n/nrow)}
+  if(is.null(nrow)) { nrow = ceiling(n/ncol)}
+  if(is.null(ncol)) { ncol = ceiling(n/nrow)}
+  ## NOTE see n2mfrow in grDevices for possible alternative
+  grid.newpage()
+  pushViewport(viewport(layout=grid.layout(nrow,ncol) ) )
+  ii.p <- 1
+  for(ii.row in seq(1, nrow)){
+    ii.table.row <- ii.row	
+    if(as.table) {ii.table.row <- nrow - ii.table.row + 1}
+    for(ii.col in seq(1, ncol)){
+      ii.table <- ii.p
+      if(ii.p > n) break
+      print(dots[[ii.table]], vp=vp.layout(ii.table.row, ii.col))
+      ii.p <- ii.p + 1
+    }
+  }
+}
+
+##### end function
+
+#### Reading temperature files for each stream. 10 streams and their acronyms:
+# Zakojska - zak
+# Upper Idrijca - uppidri
+# Huda - huda
+# Lower Idrijca - loidri
+# Studenc - stu
+# Svenica - sve
+# Gacnick - gac
+# Zadlascica - zadla
+# Trebuscica - trebu
+# Lipovesck - lipo
+# Upper Volaja (brown trout) - uppvol
+
+### zak
 
 zak.temp.df = read.csv("zak_temp.csv",header = T, 
                        stringsAsFactors = FALSE,na.strings ="")
@@ -34,7 +89,9 @@ zak.temp.sum = aggregate(Temp ~ Year + Month, data = zak.temp.df, FUN = mean)
 
 zak.temp.sum$Length = aggregate(Temp ~ Year + Month, data = zak.temp.df, FUN = length)$Temp
 
-with(zak.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
+##zak.temp.sum has Year, Month, mean temperature, number of days with temperature recorded
+
+# with(zak.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
 
 ######## uppidri
 
@@ -66,9 +123,8 @@ uppidri.temp.sum = aggregate(Temp ~ Year + Month, data = uppidri.temp.df, FUN = 
 
 uppidri.temp.sum$Length = aggregate(Temp ~ Year + Month, data = uppidri.temp.df, FUN = length)$Temp
 
-with(uppidri.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
+# with(uppidri.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
 
-par(mfrow = c(1,2))
 
 ####### Huda
 
@@ -101,7 +157,7 @@ huda.temp.sum = aggregate(Temp ~ Year + Month, data = huda.temp.df, FUN = mean)
 huda.temp.sum$Length = aggregate(Temp ~ Year + Month, 
                                  data = huda.temp.df, FUN = length)$Temp
 
-with(huda.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
+# with(huda.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
 
 
 ##### Lower Idrijca
@@ -135,7 +191,7 @@ loidri.temp.sum = aggregate(Temp ~ Year + Month, data = loidri.temp.df, FUN = me
 loidri.temp.sum$Length = aggregate(Temp ~ Year + Month, 
                                    data = loidri.temp.df, FUN = length)$Temp
 
-with(loidri.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
+# with(loidri.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
 
 
 ####### Studenc
@@ -169,7 +225,7 @@ stu.temp.sum = aggregate(Temp ~ Year + Month, data = stu.temp.df, FUN = mean)
 stu.temp.sum$Length = aggregate(Temp ~ Year + Month, 
                                 data = stu.temp.df, FUN = length)$Temp
 
-with(stu.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
+# with(stu.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
 
 #### Svenica
 
@@ -202,7 +258,7 @@ sve.temp.sum = aggregate(Temp ~ Year + Month, data = sve.temp.df, FUN = mean)
 sve.temp.sum$Length = aggregate(Temp ~ Year + Month, 
                                 data = sve.temp.df, FUN = length)$Temp
 
-with(sve.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
+# with(sve.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
 
 ##### Gacnick
 
@@ -235,7 +291,7 @@ gat.temp.sum = aggregate(Temp ~ Year + Month, data = gat.temp.df, FUN = mean)
 gat.temp.sum$Length = aggregate(Temp ~ Year + Month, 
                                 data = gat.temp.df, FUN = length)$Temp
 
-with(gat.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
+# with(gat.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
 
 ##### Zadlascica
 
@@ -268,7 +324,7 @@ zadla.temp.sum = aggregate(Temp ~ Year + Month, data = zadla.temp.df, FUN = mean
 zadla.temp.sum$Length = aggregate(Temp ~ Year + Month, 
                                     data = zadla.temp.df, FUN = length)$Temp
 
-with(zadla.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
+# with(zadla.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
 
 
 ###### Trebuscica   
@@ -302,17 +358,8 @@ trebu.temp.sum = aggregate(Temp ~ Year + Month, data = trebu.temp.df, FUN = mean
 trebu.temp.sum$Length = aggregate(Temp ~ Year + Month, 
                                     data = trebu.temp.df, FUN = length)$Temp
 
-with(trebu.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
+# with(trebu.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
 
-#with(trebu.temp.df, table(Year))
-#Year
-#1997 1998 1999 2000 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 
-#20  365  266  162  121  248  115  366  365  365  366  365  365  365  361  370  245 
-# with(filter(trebu.temp.df, Year == 2013), table(Month)
-#       + )
-#Month
-#1  2  3  4  5  6  7  8  9 10 11 12 
-#31 28 31 30 31 30 31 31 30 31 30 36 
 
 ##### Lipovesck 
 
@@ -345,7 +392,7 @@ lipo.temp.sum = aggregate(Temp ~ Year + Month, data = lipo.temp.df, FUN = mean)
 lipo.temp.sum$Length = aggregate(Temp ~ Year + Month, 
                                  data = lipo.temp.df, FUN = length)$Temp
 
-with(lipo.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
+# with(lipo.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
 
 
 ##### Upper Volaja
@@ -379,9 +426,9 @@ uppvol.temp.sum = aggregate(Temp ~ Year + Month, data = uppvol.temp.df, FUN = me
 uppvol.temp.sum$Length = aggregate(Temp ~ Year + Month, 
                                    data = uppvol.temp.df, FUN = length)$Temp
 
-with(uppvol.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
+# with(uppvol.temp.sum, boxplot(Temp ~ Month, ylim = c(0,16)))
 
-#####
+##### merge stream-specific datasets
 
 temp.all.df = 
   rbind(zak.temp.df, gat.temp.df, sve.temp.df, stu.temp.df, loidri.temp.df, uppidri.temp.df,
@@ -389,6 +436,7 @@ temp.all.df =
 
 #####
 
+### number of records per year
 
 with(huda.temp.df, table(Year))
 with(uppidri.temp.df, table(Year))
@@ -401,7 +449,7 @@ with(zadla.temp.df, table(Year))
 with(loidri.temp.df, table(Year))
 with(lipo.temp.df, table(Year))
 
-
+### subset temperature datasets wtih 2009 to 2013 incuded data (they are the years with the most days recorded)
 huda.comp.temp = filter(huda.temp.df, Year %in% (2009:2013))
 huda.comp.temp$Stream = "Huda"
 uppidri.comp.temp = filter(uppidri.temp.df, Year %in% (2009:2013))
@@ -423,60 +471,65 @@ loidri.comp.temp$Stream = "LIdri"
 lipo.comp.temp = filter(lipo.temp.df, Year %in% (2009:2013))
 lipo.comp.temp$Stream = "Lipo"
 
+########### deleted plots, code maintained for the moment
 
+# par(mfrow = c(2,5))
+# with(huda.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
+#                              main = "Huda"))
+# with(uppidri.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
+#                                 main = "UppIdri"))
+# with(loidri.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
+#                                 main = "LoIdri"))
+# with(trebu.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
+#                                 main = "Trebu"))
+# with(zak.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
+#                               main = "Zak"))
+# with(zadla.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
+#                             main = "Zadla"))
+# with(gat.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
+#                               main = "Gacnik"))
+# with(sve.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
+#                             main = "Sve"))
+# with(stu.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
+#                             main = "Stu"))
+# with(lipo.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
+#                             main = "Lipo"))
 
-par(mfrow = c(2,5))
-with(huda.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
-                             main = "Huda"))
-with(uppidri.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
-                                main = "UppIdri"))
-with(loidri.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
-                                main = "LoIdri"))
-with(trebu.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
-                                main = "Trebu"))
-with(zak.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
-                              main = "Zak"))
-with(zadla.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
-                            main = "Zadla"))
-with(gat.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
-                              main = "Gacnik"))
-with(sve.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
-                            main = "Sve"))
-with(stu.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
-                            main = "Stu"))
-with(lipo.comp.temp, boxplot(Temp ~ Month, ylim = c(0,16), 
-                            main = "Lipo"))
+## merge together the reduced datasets
 
 temp.df = rbind(huda.comp.temp,uppidri.comp.temp,loidri.comp.temp,
                 trebu.comp.temp,zak.comp.temp,zadla.comp.temp,
                 gat.comp.temp, sve.comp.temp,stu.comp.temp,
                 lipo.comp.temp)
+
+## mean by stream in 2009-2013
 temp.mean.df = aggregate(Temp ~ Stream, data = temp.df, FUN = mean)
 
+# mean by stream in summers 2009-2013
 temp.su.mean.df = aggregate(Temp ~ Stream, data = filter(temp.df,
                                                       Month %in% c(6,7,8)),FUN = mean)
-
+# mean by stream in winters 2009-2013
 temp.wi.mean.df = aggregate(Temp ~ Stream, data = filter(temp.df,
                                                          Month %in% c(12,1,2)),FUN = mean)
 
 
-prova = aggregate(Temp ~ Stream, 
-                  data = filter(temp.df,
-                                Stream == "Gac" & Month %in% c(6,7,8)),FUN = mean)
+# prova = aggregate(Temp ~ Stream, 
+#                   data = filter(temp.df,
+#                                 Stream == "Gac" & Month %in% c(6,7,8)),FUN = mean)
+# 
+# 
+# 
+# 
+# linf.k.stream = select(g.s.df1, Stream, k, linf)
+# linf.k.e.stream = linf.k.e.stream[match(temp.su.mean.df$Stream, linf.k.e.stream$Stream),]
+# 
+# par(mfrow = c(1,1))
+# plot(linf.k.e.stream$estimate ~  temp.mean.df$Temp)
 
 
 
 
-linf.k.stream = select(g.s.df1, Stream, k, linf)
-linf.k.e.stream = linf.k.e.stream[match(temp.su.mean.df$Stream, linf.k.e.stream$Stream),]
-
-par(mfrow = c(1,1))
-plot(linf.k.e.stream$estimate ~  temp.mean.df$Temp)
-
-
-
-
-####### Boxplot ggplot2 
+####### Boxplots with ggplot2 
 
 library(ggplot2)
 library(grid)
