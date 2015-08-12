@@ -11,6 +11,6 @@ The Marble Trout Conservation Program started in 1993 in the upper reaches of th
 
 ##### Analyses
 
-For some of the analyses I intended to carry out (temperature-dependent survival and growth), it was necessary to have complete temperature records for all streams since the start of the sampling. Start by sourcing the file Temp.r `source(Temp.r)`. The output temp.df (along with the production of a ten-panel plot with stream-specific monthly temparature boxplots) is a dataset with column Date, Temp (-- mean temp --), Year, Month, Stream, Calc (Meas = temperature has been recorded).
+For some of the analyses I intended to carry out (temperature-dependent survival and growth), it was necessary to have complete temperature records for all streams since the start of the sampling. Start by sourcing the file Temp.r `source(Temp.r)`. The output temp.df (along with the production of a ten-panel plot with stream-specific monthly temparature boxplots) is a dataset with column Date, Temp (-- mean temp --), Year, Month, Stream, Calc (Meas = temperature has been recorded). Then
 
 
