@@ -19,7 +19,7 @@ source("Temp.r")
 ```
 
 
-The output temp.df (along with the production of a ten-panel plot with stream-specific monthly temparature boxplots) is a dataset with column Date, Temp (-- mean temp --), Year, Month, Stream, Calc (Meas = temperature has been recorded). Then, I tested the correlation between stream temperatures between pair of streams (one is the target - the one with missing data -- and the other is the tested) and I used the temperature data of the tested stream with highest correlation with the target stream to impute the missing data.
+The output temp.all.df (along with the production of a ten-panel plot with stream-specific monthly temparature boxplots) is a dataset with column Date, Temp (-- mean temp --), Year, Month, Stream, Calc (Meas = temperature has been recorded). Then, I tested the correlation between stream temperatures between pair of streams (one is the target - the one with missing data -- and the other is the tested) and I used the temperature data of the tested stream with highest correlation with the target stream to impute the missing data.
 
 ```{r}
 Temp.tb = Temp.corr.f(temp.all.df)
