@@ -1,6 +1,3 @@
----
-output: word_document
----
 
 #### Correlation between stream temperatures in Slovenian streams in which marble trout live 
 
